@@ -1,0 +1,12 @@
+🔑 4. SQL’DE TÜM KEY TÜRLERİ
+🔐 Anahtar (Key) Türleri:
+Key Türü	Açıklama
+PRIMARY KEY	Tabloyu benzersiz tanımlar (tekil ve NOT NULL)
+FOREIGN KEY	Başka bir tablodaki PRIMARY KEY’e referans verir
+UNIQUE KEY	Tekil değer sağlar ama NULL olabilir
+COMPOSITE KEY	Birden fazla sütun birlikte tekil olur
+CANDIDATE KEY	Aday anahtarlar – tekil olabilen tüm sütun kombinasyonları
+ALTERNATE KEY	PRIMARY seçilmeyen diğer candidate key’ler
+SUPER KEY	Tekilliği sağlayan tüm sütun kombinasyonları
+NATURAL KEY	Doğal olarak tekil olan veri (örneğin T.C. No)
+ARTIFICIAL/ SURROGATE KEY	Otomatik üretilen yapay ID (örneğin serial id)

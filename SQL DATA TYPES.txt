@@ -1,0 +1,29 @@
+📚 2. SQL TÜM VERİ TİPLERİ (GENEL KATEGORİLERLE)
+🧮 Sayısal Veri Tipleri:
+Veri Tipi	Açıklama
+INT / INTEGER	Tamsayı
+SMALLINT	Küçük tamsayı
+BIGINT	Büyük tamsayı
+DECIMAL(p,s)	Kesirli sayı, hassas
+NUMERIC(p,s)	DECIMAL ile aynıdır
+FLOAT, REAL	Kayan noktalı sayı
+
+🔤 Karakter (Metin) Tipleri:
+Veri Tipi	Açıklama
+CHAR(n)	Sabit uzunlukta metin
+VARCHAR(n)	Değişken uzunlukta metin
+TEXT	Sınırsız uzunlukta metin (bazı sistemlerde)
+
+📅 Tarih & Zaman:
+Veri Tipi	Açıklama
+DATE	Yıl-ay-gün
+TIME	Saat-dakika-saniye
+DATETIME	Tarih + saat
+TIMESTAMP	Zaman damgası
+INTERVAL (PGSQL)	Süre / zaman aralığı
+
+🔘 Diğer Tipler:
+Veri Tipi	Açıklama
+BOOLEAN	TRUE / FALSE
+BLOB	Binary Large Object – görsel/ses gibi
+JSON	JSON formatında veri (PostgreSQL, MySQL)
