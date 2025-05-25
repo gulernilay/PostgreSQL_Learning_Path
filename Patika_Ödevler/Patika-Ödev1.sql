@@ -5,7 +5,7 @@ select title ,description from film
 select * from film where length between 60 and 75 order by length 
 
 --Q3: film tablosunda bulunan tüm sütunlardaki verileri rental_rate 0.99 VE replacement_cost 12.99 VEYA 28.99 olma koşullarıyla sıralayınız.
-select * from film HERE rental_rate = 0.99 AND (replacement_cost = 12.99 OR replacement_cost = 28.99) order by title
+select * from film where rental_rate = 0.99 AND (replacement_cost = 12.99 OR replacement_cost = 28.99) order by title
 
 --Q4: customer tablosunda bulunan first_name sütunundaki değeri 'Mary' olan müşterinin last_name sütunundaki değeri nedir?
 select last_name from customer where first_name='Mary'
