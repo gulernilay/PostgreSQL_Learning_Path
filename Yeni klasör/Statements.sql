@@ -20,7 +20,6 @@ insert into staff (first_name,last_name,address_id, store_id,active,username) va
 
 
 
-
 --DELETE
 --customer tablosunda hiç aktif olmayan müşterileri sil.
 DELETE  from customer where active=0 
@@ -76,7 +75,7 @@ DROP TABLE Customers;
 -- Veritabanı şemasını (yani tablonun yapısını) değiştirir. Yeni sütun ekler , var olan sütunu siler veya yeniden adlandırır ,  sğtunun veri tipini değiştirir , varsayılan değer ekler / siler , kısıtlamalar (NOT NULL UNIQUE ekler) 
 
 --customer tablosuna second_email adında yeni bir sütun ekle.
-alter table customer add column second_email varchar(150) 
+alter table customer add column second_email2 varchar(150) 
 --film tablosundaki length sütunun veri tipini SMALLINT olarak değiştir.
 alter table film alter column length type SMALLINT 
 --payment tablosundaki amount sütununu DECIMAL(6,2) olarak değiştir.
@@ -201,3 +200,37 @@ SELECT column_name(s)
 FROM table_name
 WHERE condition
 LIMIT number;
+
+
+--SELECT INTO : Bir sorgu sonucunu yeni bir tablo olarak oluşturmak için kullanılır. Yeni tablo oluşturur. Var olan tablo varsa hata verir.
+--Örnek : Tüm uzunluğu 90 dakikadan fazla olan filmleri yeni bir tabloya atalım: long_films
+
+select * into long_films
+from film 
+where length>90
+
+
+-- Eğer var olan tabloya ekleyecek olsaydık INSERT INTO tablename Select .. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
