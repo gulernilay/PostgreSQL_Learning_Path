@@ -11,28 +11,25 @@
 --Büyük miktarda verinin işlenmesi gerektiğinde, prosedür ile sunucu tarafında işlem yapılır, verinin istemciye çekilmesine gerek kalmaz.
 
 
---Örnek : Bir müşterinin (customer_id) yaptığı kiralamalardan toplam ne kadar ödeme yaptığını dönen bir procedure yazalım. 
-
--- customerların tüm kiralamalarını ve amountlarını getir.
+-- Bir müşterinin (customer_id) yaptığı kiralamalardan toplam ne kadar ödeme yaptığını dönen bir procedure yazalım. customerların tüm kiralamalarını ve amountlarını getir.
 select c.customer_id, sum(p.amount) as Toplam_Odeme , count(r.rental_id) as kiralama_say
 from customer c
 inner join rental r on r.customer_id=c.customer_id
 inner join payment p on p.rental_id=r.rental_id
 group by c.customer_id
-order by c.customer_id ASC  ---400 :24,  404:29 
+order by c.customer_id ASC  ---400 :24,  404:29
+
 
 -- function ile procedure arasındaki fark : 
 -- function : returns ile belirlenir , procedure de return yok out parametreleriyle bilgi verebilir.  Hayır (yalnızca mesaj verir)
 -- procedure doğrudan sorgu döndrüemez.terminal çıktısı verir, fonksiyon terminal çıktısı vermez. 
---✅ 2. Kullanım Yeri ve Amaç
+
 --Özellik									FUNCTION								PROCEDURE
 --SELECT içinde çağrılabilir mi?			Evet – SELECT my_function()				Hayır – sadece CALL my_procedure() ile 
---Genelde hangi amaçla kullanılır?		Hesaplama, veri döndürme, raporlama		DML (INSERT/UPDATE/DELETE), işlem mantığı, loglama
---Yan etkili işlem (data değişikliği)?	Evet ama sınırlı						Evet – transaction içinde daha uygundur 
---✅ 3. Transaction (işlem) yönetimi
---Özellik										FUNCTION									PROCEDURE
---BEGIN, COMMIT, ROLLBACK içerir mi?				❌ Hayır (fonksiyon içinde olamaz)			✅ Evet – tam transaction kontrolü mümkündür
---Örnek											RETURN x + y								BEGIN ... COMMIT bloklarıyla kullanılabilir
+--Genelde hangi amaçla kullanılır?			Hesaplama, veri döndürme, raporlama		DML (INSERT/UPDATE/DELETE), işlem mantığı, loglama
+--Yan etkili işlem (data değişikliği)?		Evet ama sınırlı						Evet – transaction içinde daha uygundur 
+--BEGIN, COMMIT, ROLLBACK içerir mi?		Hayır (fonksiyon içinde olamaz)			Evet – tam transaction kontrolü mümkündür
+											RETURN x + y							BEGIN ... COMMIT bloklarıyla kullanılabilir
 
 -- FUNCTION çağırma şekli 
 SELECT get_total_payments(1);
@@ -40,8 +37,7 @@ SELECT get_total_payments(1);
 -- PROCEDURE çağırma şekli 
 CALL calculate_total_payments(1, NULL);
 
---🧠 Kısaca Ne Zaman Hangisini Kullanmalı?
---İhtiyacın	Tercih Et
+--Kısaca Ne Zaman Hangisini Kullanmalı?
 --Raporlama, hesaplama, veri döndürme						✅ FUNCTION
 --Veri değiştirme (INSERT/UPDATE/DELETE) ve kontrol akışı	✅ PROCEDURE
 --OUT parametreyle işlem sonucu göstermek istiyorsan		✅ PROCEDURE
@@ -50,7 +46,6 @@ CALL calculate_total_payments(1, NULL);
 
 
 -- Tüm müşterilerin kiralama ve ödeme bilgilerini yazdıran procedure
-
 CREATE OR REPLACE PROCEDURE get_customer_rental_and_payments() --Veritabanında herhangi bir şey döndürmez. Terminal çıktısı verir (RAISE NOTICE) → sadece görsel olarak ekranda görünür.Genellikle loglama, veri kontrolü veya görsel geri bildirim amaçlı kullanılır.
 LANGUAGE plpgsql
 AS $$
@@ -80,7 +75,9 @@ END;
 $$;
 
 CALL get_customer_rental_and_payments();
+
 ------------------------------------------------------------------
+
 CREATE OR REPLACE FUNCTION get_customer_rental_and_payments() --Gerçekten veri döndürür. Yani SELECT sorgusunda sonuç alırsın. Bu fonksiyon, SELECT içinde başka sorgulara gömülebilir.
 
 RETURNS TABLE (
@@ -108,14 +105,12 @@ END;
 $$;
 
 SELECT * FROM get_customer_rental_and_payments();
+-------
 
 
 
-
---ÖRNEK SORU: Verilen bir customer_id için, o müşterinin yaptığı kiralamaları ve her birine ait ödeme tutarlarını listeleyen bir FUNCTION yazınız.
-
+--Verilen bir customer_id için, o müşterinin yaptığı kiralamaları ve her birine ait ödeme tutarlarını listeleyen bir FUNCTION yazınız.
 create or replace function soru1(p_customer_id INTEGER)
-
 RETURNS TABLE (
     rental_id INTEGER,
     rental_date TIMESTAMP,
@@ -141,7 +136,7 @@ $$;
 SELECT * FROM soru1(5);
 
 
---ÖRNEK : 🎯 "Tüm müşterilerin customer_id, toplam kiralama sayısı ve toplam ödeme tutarını konsola yazdıran bir PROCEDURE yazınız."
+--"Tüm müşterilerin customer_id, toplam kiralama sayısı ve toplam ödeme tutarını konsola yazdıran bir PROCEDURE yazınız."
 CREATE OR REPLACE PROCEDURE print_customer_rentals_and_payments()
 LANGUAGE plpgsql
 AS $$
@@ -172,7 +167,7 @@ $$;
 
 CALL print_customer_rentals_and_payments();
 
---SORU 4: 🎯 "Bir müşteriye yeni kiralama ve ödeme kaydı ekleyen bir PROCEDURE yazınız. Aynı işlemde log tablosuna kayıt eklensin. Hatalı işlemde ROLLBACK yapılmalı."
+--"Bir müşteriye yeni kiralama ve ödeme kaydı ekleyen bir PROCEDURE yazınız. Aynı işlemde log tablosuna kayıt eklensin. Hatalı işlemde ROLLBACK yapılmalı."
 --rental lof adında bir basit bir log tablosu oluşturalım 
 CREATE TABLE rental_log (
     log_id SERIAL PRIMARY KEY,
@@ -181,7 +176,6 @@ CREATE TABLE rental_log (
     rental_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status TEXT
 );
-
 CREATE OR REPLACE PROCEDURE create_rental_with_log(
     IN p_customer_id INTEGER,
     IN p_film_id INTEGER,
@@ -225,10 +219,7 @@ EXCEPTION
 END;
 $$;
 
-
 CALL create_rental_with_log(1, 100, 4.99);
-
-
 ------------------------------------------------------------------------------------------------------------------------------------------------
 --PostgreSQL ARRAY_AGG function is used to concatenate the input values including null into an array. 
 SELECT
@@ -246,8 +237,8 @@ JOIN
 GROUP BY 
     c.customer_id, c.first_name;
 
----------------------------------------------------------------------------------------------------------------------------------------------
---STRING FUNCTIONS 
+
+-------------------------------------------------------------------STRING FUNCTIONS ---------------------------------------------------------------------------------------------
 
 -- ASCII(): İlk karakterin ASCII değerini verir
 SELECT ASCII('A');  -- 65
@@ -329,7 +320,6 @@ SELECT UPPER('abc');  -- 'ABC'
 -- UPPER(): Argümanı büyük harfe çevirir
 SELECT UPPER('Hello');  -- 'HELLO'
 
----------------------------------------------------------------------------------------------------------------------------------------------
 -- ABS(): Mutlak değeri döner
 SELECT ABS(-5);  -- 5
 
@@ -401,15 +391,13 @@ SELECT SQRT(9);  -- 3
 
 -- TAN(): Tanjant değeri (radyan)
 SELECT TAN(PI()/4);  -- ~1
-------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
---SCHEMA :A schema is a named collection of tables. A schema can also contain views, indexes, sequences, data types, operators, and functions. 
---Schemas are like folders in an operating system, but they can't contain other schemas inside them. PostgreSQL statement CREATE SCHEMA creates a schema. 
-Benzer işleri yapan objeleri gruplamak
-Kullanıcıya özel alanlar oluşturmak
-İsim çakışmalarını önlemek (aynı isimde iki tablo farklı şemalarda olabilir)
-Yetkilendirme ve erişim kontrolü sağlamak
-
+----------------------------------------------------------------------SCHEMA---------------------------------------------------------------------------------------
+--A schema is a named collection of tables. A schema can also contain views, indexes, sequences, data types, operators, and functions. 
+--Schemas are like folders in an operating system, but they can't contain other schemas inside them. PostgreSQL statement CREATE SCHEMA creates a schema.
+--Benzer işleri yapan objeleri gruplamak
+--Kullanıcıya özel alanlar oluşturmak
+--İsim çakışmalarını önlemek (aynı isimde iki tablo farklı şemalarda olabilir)
+--Yetkilendirme ve erişim kontrolü sağlamak
 
 CREATE SCHEMA muhasebe;
 CREATE TABLE muhasebe.faturalar (
@@ -420,13 +408,10 @@ CREATE TABLE muhasebe.faturalar (
 SELECT * FROM musteriler;--→ public.musteriler tablosunu çağırır.
 
 -- PostgreSQL’de dvdrental veritabanı varsayılan olarak tüm tabloları public şeması içinde barındırır. Ancak sen bu yapıyı örneğin mantıksal modüllere ayırmak istersen (örneğin: musteri, film, odeme, yonetim gibi), kendi şemalarını oluşturup tablolara buna göre taşıyabilirsin.
-dvdrental veritabanında:
-
-Müşteri ile ilgili tablolar → musteri şeması
-
-Film ve içeriklerle ilgili tablolar → film şeması
-
-Ödeme ile ilgili tablolar → odeme şeması
+--dvdrental veritabanında:
+--Müşteri ile ilgili tablolar → musteri şeması
+--Film ve içeriklerle ilgili tablolar → film şeması
+--Ödeme ile ilgili tablolar → odeme şeması
 
 CREATE SCHEMA musteri;
 CREATE SCHEMA film;
@@ -437,8 +422,6 @@ ALTER TABLE public.customer SET SCHEMA musteri;--Örneğin customer tablosunu mu
 ALTER TABLE public.film SET SCHEMA film; --film, actor, category tablolarını film şemasına taşı:
 ALTER TABLE public.actor SET SCHEMA film;
 ALTER TABLE public.category SET SCHEMA film;
-
-
 ALTER TABLE public.payment SET SCHEMA odeme; --payment ve rental tablolarını odeme şemasına taşı: 
 ALTER TABLE public.rental SET SCHEMA odeme;
 
@@ -446,22 +429,16 @@ SELECT * FROM musteri.customer; -- Artık bu tablolara erişmek için tam şema 
 SELECT * FROM film.film;
 SELECT * FROM odeme.payment;
 
-Neden Şema Kullanılır? 
-Modülerlik sağlar
-Büyük veritabanlarında karmaşayı azaltır
-Yetkilendirme ve güvenlik kontrollerini kolaylaştırır
-Geliştirici ekipler için izolasyon sağlar (her ekip kendi şemasında çalışabilir)
+--Neden Şema Kullanılır? 
+--Modülerlik sağlar
+--Büyük veritabanlarında karmaşayı azaltır
+--Yetkilendirme ve güvenlik kontrollerini kolaylaştırır
+--Geliştirici ekipler için izolasyon sağlar (her ekip kendi şemasında çalışabilir)
 
---YETKİLENDİRME 
+---------------------------------------------------------------YETKİLENDİRME---------------------------------------------------------------------------------------- 
 GRANT USAGE ON SCHEMA odeme TO reporting_user;
 GRANT SELECT ON ALL TABLES IN SCHEMA odeme TO reporting_user;
 
-
-
-
-
-
-
-
+--
 create function procedure1
 RETURNS text AS $variable_name$

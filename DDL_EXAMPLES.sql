@@ -12,9 +12,7 @@ where customer_id=42
 ALTER TABLE payment ADD column payment_method varchar(20);
 
 
---Müşteri yorumlarını saklamak için customer_feedback adında feedback_id, customer_id, comment, 
---feedback_date sütunlarına sahip bir tablo oluşturacak CREATE TABLE sorgusunu yazınız. 
-
+--Müşteri yorumlarını saklamak için customer_feedback adında feedback_id, customer_id, comment, feedback_date sütunlarına sahip bir tablo oluşturacak CREATE TABLE sorgusunu yazınız. 
 create table customer_feedback (
 	feedback_id INT primary key,
 	customer_id INT Not null,

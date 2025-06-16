@@ -1,5 +1,7 @@
--- Worksheet 1: SELECT, FROM , WHERE 
+-- Worksheet 1: 
 
+
+------------------------------------------------------------SELECT, FROM , WHERE --------------------------------------------------------------------------------
 -- Adı "Mary" olan tüm müşterileri listele.
 Select first_name from customer where first_name='Mary'
 
@@ -12,7 +14,7 @@ select first_name,active from customer where active=0
 -- SELECT + COUNT + DISTINCT 
 SELECT COUNT(DISTINCT country) FROM country
 
---
+-- SELECT + COUNT + DISTINCT  
 SELECT Count(*) AS DistinctCountries
 FROM (SELECT DISTINCT Country FROM Customers);
 
@@ -55,12 +57,12 @@ SELECT Count(*) AS DistinctCountries
 FROM (SELECT DISTINCT Country FROM Customers);
 
 
-----------------------WHERE kullanımında eğer string varsa tek tırnak , sayısal değer varsa direk yaz-------------------------------
+----------------------WHERE kullanımında eğer string varsa tek tırnak kullanılır , sayısal değer varsa direk yazılır-------------------------------
 SELECT * FROM Customers WHERE CustomerID=1;
 SELECT * FROM Customers WHERE first_name='Johnson';
 
 
-----------------------------------------------------OPERATORS------------------------------------------------------------
+-----------------------------------------------------------------OPERATORS------------------------------------------------------------
 SELECT * FROM customer WHERE first_name = 'John';
 SELECT * FROM film WHERE length > 120;
 SELECT * FROM payment WHERE amount < 5;
@@ -109,27 +111,27 @@ select country from country where country not in ('Canada', 'Brazil', 'Japan', '
 --Q5:rental tablosunda kiralama yapan benzersiz müşteri sayılarını (customer_id) say
 select count(distinct customer_id) from rental 
 
---+=	Add equals
+-----------------------------------------------------------------+=	Add equals
 UPDATE products
 SET price = price + 5
 WHERE product_id = 101;
 
--- -=	Subtract equals
+----------------------------------------------------------------- -=	Subtract equals
 UPDATE products
 SET stock_quantity = stock_quantity - 10
 WHERE product_id = 101;
 
--- *=	Multiply equals
+----------------------------------------------------------------- *=	Multiply equals
 UPDATE products
 SET price = price * 1.10
 WHERE category_id = 3;
 
--- /=	Divide equals
+----------------------------------------------------------------- /=	Divide equals
 UPDATE products
 SET price = price / 2
 WHERE price > 100;
 
--- %=	Modulo equals
+----------------------------------------------------------------- %=	Modulo equals
 UPDATE inventory
 SET remainder = quantity % 2;
 
@@ -140,16 +142,18 @@ SET is_even = CASE
                 WHEN quantity % 2 = 0 THEN 1
                 ELSE 0
              END;
-
+--
 UPDATE inventory
 SET is_even = 1
 WHERE quantity % 2 = 0;
 
+
+--
 UPDATE inventory
 SET is_even = 0
 WHERE quantity % 2 != 0;
 
---Q2: 🧠 Soru 1 — Film süresine göre etiket oluştur
+--Q2: Soru 1 — Film süresine göre etiket oluştur
 --Her film için aşağıdaki kurallara göre bir length_label sütunu oluşturmak istiyoruz (sanal olarak):
 --Süresi 0–60 dakika arası → 'Kısa'
 --Süresi 61–120 dakika arası → 'Orta'
@@ -165,8 +169,10 @@ SET length_label = CASE
 				    END;
 select title,length_label from film 				
 			
-----------------------------------LOGICAL OPERATORS----------------------------------------------------
+-----------------------------------------------------LOGICAL OPERATORS----------------------------------------------------
+
 --ALL :tüm alt sorgu sonuçlarını karşılaması gerekir.
+
 --category_id si 2 olan tüm ürünlerin price ından büyük olan ürün isimlerini getir. 
 SELECT product_name
 FROM products
@@ -178,8 +184,7 @@ SELECT * FROM employees
 WHERE salary > ALL (
     SELECT salary FROM employees WHERE department_id = 2
 );
-
-
+---
 SELECT ProductName
 FROM Products
 WHERE ProductID = ALL
@@ -187,24 +192,23 @@ WHERE ProductID = ALL
   FROM OrderDetails
   WHERE Quantity = 10);
 
-  
---AND / BETWEEN / IN / LIKE /NOT / OR 
-
 --ANY : Alt sorgudaki herhangi bir koşulu sağlarsa sonucu getirir.
 SELECT product_name FROM products
 WHERE price < ANY (
     SELECT price FROM products WHERE category_id = 3
 );
-
+---
 SELECT column_name(s)
 FROM table_name
 WHERE column_name operator ANY
   (SELECT column_name
   FROM table_name
   WHERE condition);
-  
+---
 
 --EXISTS: Alt sorgu en az 1 kayıt döndürüyorsa TRUE olur. En az bir siparişi olan müşterileri getir.
+
+
 --The EXISTS operator is used to test for the existence of any record in a subquery. 
 SELECT * FROM customer c
 WHERE EXISTS (
@@ -214,12 +218,9 @@ SELECT SupplierName
 FROM Suppliers
 WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppliers.supplierID AND Price < 20);
 
-
 SELECT SupplierName
 FROM Suppliers
 WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppliers.supplierID AND Price = 22);
-
-
 
 -- SOME : İçlerinden biri bile şartı sağlasa yeter : PG filmlerinden en az birinden daha pahalı kiralanan filmleri getirir.
 SELECT * FROM film
@@ -231,6 +232,11 @@ SELECT * FROM employees
 WHERE salary < ANY ( 
     SELECT salary FROM employees WHERE department_id = 1
 );
+
+--AND / BETWEEN / IN / LIKE /NOT / OR  
+
+
+
 
 
 --Exercises : 
@@ -292,7 +298,7 @@ WHERE EXISTS (
 
 
 
------------------------------------KARAKTER ARAMA : LIKE , ILIKE----------------------------------------------------------------
+-----------------------------------------------------KARAKTER ARAMA : LIKE , ILIKE----------------------------------------------------------------
 
 --Adı A harfiyle başlayan müşterileri getir.
 Select first_name from customer where first_name ILIKE 'A%'  --ILIKE case sensitive değil ve postgresql e özgüdür , LIKE ise büyük/küçük harfe duyarlıdır. 
@@ -323,7 +329,7 @@ select * from customer where first_name like '_r%'
 select * from customer where country like 'Spain'
 
 
--------------------------------------------Sayısal Aralıklar (BETWEEN, >, <, =)--------------------------------------------------
+-----------------------------------------------------------------Sayısal Aralıklar (BETWEEN, >, <, =)--------------------------------------------------
 --Süresi 90 ile 120 dakika arasında olan filmleri bul.
 Select title ,length from film where length BETWEEN 90 and 120
 
@@ -355,7 +361,7 @@ SELECT country_id,country FROM country  WHERE  country != 'Spain'
 
 
 
-----------------------------------------------NULL ve Boolean Kontrolleri-------------------------------------------------------
+---------------------------------------------------------NULL ve Boolean Kontrolleri-------------------------------------------------------
 --Telefon numarası olmayan adresleri getir.
 select address_id,phone from address where phone IS NULL or phone=''
 
@@ -366,7 +372,7 @@ select store_id,first_name from customer where store_id is null
 select store_id,first_name from customer where store_id is not null
 
 
------------------------------------------------Tarih ve Zaman (DATE, TIMESTAMP)-----------------------------------------------
+---------------------------------------------------------Tarih ve Zaman (DATE, TIMESTAMP)-----------------------------------------------
 
 --2006 yılına ait kiralama kayıtlarını (rental_date) getir.
 SELECT rental_date
@@ -385,7 +391,6 @@ SELECT rental_date
 FROM rental
 WHERE rental_date < CURRENT_DATE;
 
-
 -- rental tablosunu kullanarak, 2005-07-01 tarihinde yapılan kiralamaları listele (rental_id, rental_date).
 select rental_id ,rental_date
 from rental
@@ -401,7 +406,6 @@ WHERE last_update < '2006-01-01'; -- last_update zaten TIMESTAMP olduğu için d
 
 select * from staff -- tüm veri tiplerini görebilrsin. 
 
------------------------------------------HARD EXAMPLES---------------------------
 --Spain de yaşayan ve (ismi ya G harfi ile başlayacak ya da R)
 SELECT * FROM Customers WHERE Country = 'Spain' AND (CustomerName LIKE 'G%' OR CustomerName LIKE 'R%');
 --( Spain de yaşayan ve ismi G ile başlayan ) ya da ismi R ile başlayan 
@@ -410,28 +414,24 @@ SELECT * FROM Customers WHERE Country = 'Spain' AND CustomerName LIKE 'G%' OR Cu
 
 
 
---------------------------WILDCARDS----------------------------------------
+
+
+--------------------------------------WILDCARDS----------------------------------------
 --Mysql ve postgresql de desteklenenler:  % , _ 
 
 
-
--- IN OPERATOR : birden fazla or kullanmanı engeller. 
+--------------------------------------IN OPERATOR : birden fazla or kullanmanı engeller. 
 SELECT * from customer where country in ('Germany', 'France', 'UK')
 SELECT * from customer where country not in ('Germany', 'France', 'UK')
 select * from city where country_id in ( select country_id from country)
 
-
-
---------------------------------ALIAS----------------------------
+-------------------------------------ALIAS----------------------------
 SELECT CustomerID AS id , CustomerName AS Customer FROM Customers;
 SELECT ProductName AS [My Great Products] FROM Products; -- eğer yeni sütunun adında boşluk olucaksa 
 SELECT CustomerName, Address + ', ' + PostalCode + ' ' + City + ', ' + Country AS Address -- 4 tane sütun değerinden oluşan yeni sütun 
 FROM Customers;
 
---SORU: 🧠 Soru — İsmi belirli desene uyan müşterileri getir ve sütunlara takma ad ver
---customer tablosunu kullanarak:
---İsmi (first_name) ikinci harfi "a" olan müşterileri bul (örneğin: "Sara", "Nadia" gibi).
---:first_name sütununu "Ad" olarak,last_name sütununu "Soyad" olarak göster.
+-- Soru — İsmi belirli desene uyan müşterileri getir ve sütunlara takma ad ver,customer tablosunu kullanarak:İsmi (first_name) ikinci harfi "a" olan müşterileri bul (örneğin: "Sara", "Nadia" gibi) , :first_name sütununu "Ad" olarak,last_name sütununu "Soyad" olarak göster.
 SELECT first_name AS AD, last_name AS SOYAD
 FROM customer
 WHERE first_name LIKE '_a%';

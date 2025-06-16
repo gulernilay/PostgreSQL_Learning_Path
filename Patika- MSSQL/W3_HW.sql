@@ -1,0 +1,218 @@
+--1) addres tablosunun kontrol etmek için top 100 ünü çekiniz.
+select top 100*
+from [Address];
+
+--2)CITIES tablosuna yeni bir kayıt olarak ID,COUNTRYID VE memlektenizi ekleyin.
+insert into CITIES VALUES(82,2,'SOFIA');
+
+--3)[dbo].[USERS] tablosundaki 10 numaralı id yi kendi bilgileriniz ile update edin.
+UPDATE USERS
+SET   USERNAME_='N_NİLAY' , NAMESURNAME='NİLAY GÜLER' , PASSWORD_='LKJGLKDG',  EMAIL='x@gmail.com', GENDER='K', BIRTHDATE='2000-08-08', TELNR1='(541)4957473', TELNR2='(543)6486175'
+WHERE ID=10;
+
+--4)[dbo].[SALEORDERS] tablosunda category1 i SEKERLEME OLAN KAYITLARI GETİRİN.
+SELECT * FROM SALEORDERS  where CATEGORY1='SEKERLEME';
+
+--5)[dbo].[SALEORDERS] tablosunda LINETOTALI 20.000 DEN BUYUK KAYITLARI GETIRIN.
+SELECT * FROM SALEORDERS  where LINETOTAL>20.000;
+
+--6)[dbo].[SALEORDERS] tablosunda haftaiçi olan kayıtları getirin.
+SELECT * FROM SALEORDERS WHERE DAYOFWEEK_ in ('Pazartesi','Salı','Çarşamba','Perşembe','Cuma') ;
+
+--7)[dbo].[SALEORDERS] tablosunda pazar günü ve Tablet satışlarını getirin.
+SELECT * FROM SALEORDERS WHERE DAYOFWEEK_='Pazar' and  CATEGORY4='TABLET';
+
+--8)[dbo].[ITEMS]tablosunda kaç tane tekin category1 vardır.
+SELECT COUNT(DISTINCT CATEGORY1) AS unique_category1_count
+FROM ITEMS
+
+--9)[dbo].[ITEMS]tablosundaki ürünleri unitprice a göre büyükten küçüğe sıralayınız.
+select * from ITEMS 
+order by UNITPRICE DESC;
+
+--10)[dbo].[SALEORDERS] tablosunda şehirlere göre (SUM,COUNT,MIN,MAX,AVG) adeti getirin.
+select CITY ,
+	COUNT(*) AS order_count,
+    SUM(AMOUNT) AS total_quantity,
+    MIN(AMOUNT) AS min_quantity,
+    MAX(AMOUNT) AS max_quantity,
+    AVG(AMOUNT) AS avg_quantity
+From SALEORDERS
+group by CITY 
+
+
+--11) ÜRÜN KATEGORİLERİNE GÖRE TOPLAM SATIŞLARı getirin. 
+SELECT CATEGORY1, CATEGORY2, CATEGORY3, CATEGORY4 , SUM(AMOUNT)total_sale_per_category  ,  COUNT(*) AS sale_frequency 
+FROM ITEMS ıtem
+INNER JOIN ORDERDETAILS OD ON OD.ITEMID= ıtem.ID 
+GROUP BY CATEGORY1, CATEGORY2, CATEGORY3, CATEGORY4 
+order by 5 ASC;
+
+--12)order ve user tablolarını left,right ve inner olarak şekilde birleştiriniz.
+select *
+from USERS users
+inner join ORDERS orders on orders.USERID=users.ID;
+
+select *
+from USERS users
+LEFT join ORDERS orders on orders.USERID=users.ID;
+
+
+select *
+from USERS users
+Right join ORDERS orders on orders.USERID=users.ID;
+
+
+--13)adress ve user tablolarını left,right ve inner olarak şekilde birleştiriniz.
+select *
+from USERS users
+inner join [Address] addresss on addresss.USERID=users.ID;
+
+select *
+from USERS users
+left join [Address] addresss on addresss.USERID=users.ID;
+
+select *
+from USERS users
+Right join [Address] addresss on addresss.USERID=users.ID;
+
+
+--14)En fazla alışveriş hangi markada yapılmıştır.
+
+SELECT IT.BRAND, SUM(OD.AMOUNT) AS  Sale_Amount , SUM(OD.LINETOTAL) AS  LineTotal , AVG(OD.UNITPRICE) as Average_Unit_Price
+FROM ORDERDETAILS OD
+INNER JOIN ITEMS IT ON IT.ID=OD.ITEMID
+GROUP BY IT.BRAND ;
+
+--15)oyuncak ANA KATEGORİSİNDE , ZEKA GELISTIRICI UST KATEGORISINDE,OYUNCAKLAR ALT KATEGORISINDE EN FAZLA SATIŞ YAPAN, bebe oyuncakları nelerdir?
+SELECT 
+    IT.ITEMNAME,
+    IT.CATEGORY1,
+    IT.CATEGORY2,
+    IT.CATEGORY3,
+    SUM(OD.AMOUNT) AS satis_miktari
+FROM 
+    ORDERDETAILS OD
+INNER JOIN 
+    ITEMS IT ON IT.ID = OD.ITEMID
+WHERE 
+    IT.CATEGORY1 = 'OYUNCAK'
+    AND IT.CATEGORY2 = 'ZEKA GELISTIRICI'
+    AND IT.CATEGORY3 = 'OYUNCAKLAR'
+    AND IT.ITEMNAME LIKE '%bebe%'  -- sadece bebe oyuncakları
+GROUP BY 
+    IT.ITEMNAME, IT.CATEGORY1, IT.CATEGORY2, IT.CATEGORY3
+ORDER BY 
+    satis_miktari DESC;
+
+
+--16) TEMIZLIK KATEGORİSİNDEKI URUNLERIN ORTALAMA FİYAT NEDİR
+SELECT CATEGORY1 , AVG(UNITPRICE) AS ortalama_fiyat
+FROM ITEMS 
+WHERE CATEGORY1='TEMIZLIK'
+GROUP BY CATEGORY1
+
+
+
+--17) HANGİ YAŞ GRUPLARI DAHA FAZLA ALIŞVERİŞ YAPMIŞtır
+SELECT 
+    CASE 
+        WHEN U.AGE BETWEEN 0 AND 17 THEN '0-17'
+        WHEN U.AGE BETWEEN 18 AND 25 THEN '18-25'
+        WHEN U.AGE BETWEEN 26 AND 35 THEN '26-35'
+        WHEN U.AGE BETWEEN 36 AND 45 THEN '36-45'
+        WHEN U.AGE BETWEEN 46 AND 60 THEN '46-60'
+        ELSE '60+'
+    END AS Yas_Grubu,
+    COUNT(*) AS Alisveris_Sayisi
+FROM USERS U
+JOIN ORDERS O ON U.ID = O.USERID
+GROUP BY 
+    CASE 
+        WHEN U.AGE BETWEEN 0 AND 17 THEN '0-17'
+        WHEN U.AGE BETWEEN 18 AND 25 THEN '18-25'
+        WHEN U.AGE BETWEEN 26 AND 35 THEN '26-35'
+        WHEN U.AGE BETWEEN 36 AND 45 THEN '36-45'
+        WHEN U.AGE BETWEEN 46 AND 60 THEN '46-60'
+        ELSE '60+'
+    END
+ORDER BY Alisveris_Sayisi DESC;
+
+
+--18)[dbo].[ITEMS] TABLOSUNDAKİ TÜM CATERGORYLERİ BİRLEŞTİRİN.
+SELECT 
+    CATEGORY1 + ' - ' + CATEGORY2 + ' - ' + CATEGORY3 AS Tam_Kategori
+FROM ITEMS;
+
+
+--19)[dbo].[PAYMENTS] TABLOSUNDAKİ APPROVECODE KOLONUNUN ILK 5 DEĞERİNİ AYRI BİR KOLON OLARAK YAZIN.
+
+SELECT APPROVECODE, LEFT(APPROVECODE, 5) AS ApproveCode_Ilk5
+FROM PAYMENTS; 
+
+--20)--19)[dbo].[PAYMENTS] TABLOSUNDAKİ SAYISAL DEĞERLERİ AYRI BİR KOLON OLARAK YAZIN.
+SELECT 
+    APPROVECODE,
+    PATINDEX('%[0-9]%', APPROVECODE) AS Ilk_Rakam_Pozisyonu,
+    -- Sadece rakamları ayıklamak için bir örnek
+    -- (SQL Server REGEXP desteklemediği için basit bir örnek)
+    APPROVECODE AS Orijinal,
+    REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+    APPROVECODE, 'A', ''), 'B', ''), 'C', ''), 'D', ''), 'E', ''), 'F', ''), 'G', ''), 'H', ''), 'I', ''), 'J', '') AS Sayisal_Yaklasik
+FROM PAYMENTS;
+
+
+--21)[dbo].[USERS] TABLOSUNDAKİ PASSWORD KOLONUNU TÜM DEĞERLERİ BÜYÜK YAZIN.
+SELECT UPPER([PASSWORD_]) AS BUYUK_HARF,[PASSWORD_]
+FROM USERS
+
+
+
+--22)[dbo].[USERS] TABLOSUNDAKİ NAMESURNAME  KOLONUNUNDAKİ SOYİSİMLERİ TÜM DEĞERLERİ KÜÇÜK YAZIN.
+SELECT LOWER(NAMESURNAME) AS KUCUK_HARF,NAMESURNAME
+FROM USERS
+
+--23)[dbo].[INVOICES] TABLOSUNDAKİ DATE KOLONUNU AŞAĞIDAKİ FORMATLARA ÇEVİRİN.
+
+--mm/dd/yyyy
+SELECT CONVERT(varchar,DATE_,101)TARIH,DATE_ FROM INVOICES 
+
+--yyyy.mm.dd
+select CONVERT(varchar,DATE_,102),DATE_ from INVOICES
+
+---dd.mm.yyyy
+select CONVERT(varchar,DATE_,104),DATE_ from INVOICES
+
+--yyyymmdd
+select CONVERT(varchar,DATE_,10),DATE_ from INVOICES
+
+
+--24)[dbo].[INVOICES] TABLOSUNDAKİ DATE KOLONUNU YIL,AY,GUN,HAFTA OLARAK AYRI AYIR KOLONLARDA GÖSTERİN.
+
+SELECT DATEPART(DAY,DATE_)GUN, DATEPART(YEAR,DATE_)YIL, DATEPART(MONTH,DATE_)AY,dateparT(WEEK,DATE_) HAFTA, DATE_ FROM INVOICES;
+
+
+--25)[dbo].[SALEORDERS] TABLOSUNDAKİ MONTH KOLONUNA GÖRE HANGİ AYIN HANGİ MEVSİME GELDİĞİNİ YAZIN.
+SELECT 
+    MONTH_,
+    CASE 
+        WHEN MONTH_ IN ('Aralık', 'Ocak', 'Şubat') THEN 'Kış'
+        WHEN MONTH_ IN ('Mart', 'Nisan', 'Mayıs') THEN 'İlkbahar'
+        WHEN MONTH_ IN ('Haziran', 'Temmuz', 'Ağustos') THEN 'Yaz'
+        WHEN MONTH_ IN ('Eylül', 'Ekim', 'Kasım') THEN 'Sonbahar'
+        ELSE 'Bilinmeyen'
+    END AS Mevsim
+FROM SALEORDERS;
+
+--26)[dbo].[ITEMS] TABLOSUDNAKİ BRANLERİ AŞAĞIDAKİ KURALA GÖRE YENİ BİR KOLON OLUŞTURUNUZ.
+SELECT 
+    BRAND,
+    CASE 
+        WHEN BRAND = 'ULKER' THEN 'YEME ICME'
+        WHEN BRAND = 'REXONA' THEN 'KOZMETIK'
+        WHEN BRAND = 'ALGIDA' THEN 'DONDURMA'
+        WHEN BRAND = 'NESCAFE' THEN 'SICAK ICECEK'
+        ELSE 'DIGER'
+    END AS Urun_Kategorisi
+FROM ITEMS;
+

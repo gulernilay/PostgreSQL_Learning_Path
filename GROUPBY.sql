@@ -1,4 +1,4 @@
--- 1. Soru – SELECT, FROM, WHERE, GROUP BY
+--SELECT, FROM, WHERE, GROUP BY
 
 --Dikkat: SELECT ifadesinde, GROUP BY'da olmayan sütunlar sadece aggregate fonksiyonla kullanılabilir. 
 --SELECT customer_id, COUNT(*) FROM rental GROUP BY customer_id;  -- doğru
@@ -11,7 +11,6 @@ from customer
 where active=1
 group by store_id
 
--- 2. Soru – SELECT, FROM, WHERE, GROUP BY
 -- "Her şehirde kaç müşteri bulunduğunu listele."
 select city_id , count(*) numberofCustomer
 from 
@@ -71,8 +70,7 @@ FROM film
 GROUP BY rating
 HAVING AVG(length) > 120;
 
--- aktif olan müşterileri şehirlerine göre grupla, her şehirde kaç müşteri olduğunu yaz. sonuçları çok müşteriden az müşteriye doğru sırala
---customer address id ile address tablosundaki addressid ye kaşılık gelen city id
+-- aktif olan müşterileri şehirlerine göre grupla, her şehirde kaç müşteri olduğunu yaz. sonuçları çok müşteriden az müşteriye doğru sırala . customer address id ile address tablosundaki addressid ye kaşılık gelen city id
 SELECT 
     city_id,
     COUNT(customer_id) AS customer_count
@@ -89,7 +87,6 @@ ORDER BY
 -- AGGREGATE FUNCTIONS 
 --MIN , MAX, COUNT ,AVG ,SUM 
 select min(amount) from payment;
-
 SELECT MIN(amount) AS SmallestPrice FROM payment;
 
 -- ödeme günlerine göre en düşük ödemeleri grupla
@@ -116,15 +113,11 @@ select sum(amount*price) from tablex
 select avg(amount) as avgprice from payment
 SELECT * FROM payment WHERE amount > (SELECT AVG(amount) FROM payment);
 
-
---soru:Ödeme tutarı 0’dan büyük olan işlemleri dikkate alarak, her bir personelin kaç adet ödeme işlemi gerçekleştirdiğini listeleyiniz. 
---Sonuçları en fazla işlem yapan personelden başlayarak sıralayınız.C
+--Ödeme tutarı 0’dan büyük olan işlemleri dikkate alarak, her bir personelin kaç adet ödeme işlemi gerçekleştirdiğini listeleyiniz.Sonuçları en fazla işlem yapan personelden başlayarak sıralayınız.C
 select staff_id, count(*) as odeme_adedi
 from payment where amount >0 group by staff_id order by odeme_adedi DESC
 
-
-
---SORU :Kiralama ücreti 2.99'dan yüksek olan filmleri, uzunluklarına göre gruplayarak her uzunlukta kaç film olduğunu bulunuz. En fazla filme sahip uzunluklardan başlayarak sıralayınız.
+--Kiralama ücreti 2.99'dan yüksek olan filmleri, uzunluklarına göre gruplayarak her uzunlukta kaç film olduğunu bulunuz. En fazla filme sahip uzunluklardan başlayarak sıralayınız.
 select title,count(*) as uzunlugunagorefilmsayisi from film where renatl_rate>2.99 group by length order by uzunlugunagorefilmsayisi DESC 
 
 

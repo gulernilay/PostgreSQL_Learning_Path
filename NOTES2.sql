@@ -1,45 +1,43 @@
+----------------------------------------------------------------NOTLAR--------------------------------------------------------------------------------
+
+
 DROP TABLE IF EXISTS test; ---- noktalı virgül aslında en sona konur , ara sorgularda virgülle ayır. 
 
-CREATE TABLE author2 (LIKE author); -- bir tabloya enzer tblo yaratmak ( sadece tablo yapısı gelir ancak içi boş gelir ) 
+--
+CREATE TABLE author2 (LIKE author); -- bir tabloya enzer tablo yaratmak ( sadece tablo yapısı gelir ancak içi boş gelir ) 
 
+--
 select * from public.author 
 order by id ASC 
 
+--
 insert into author2 -- bir tablonun verilerini başka bir tabloyakopyalamak 
 select * from author 
 where first_name="Sabahaddin"
 
+--
 create table author3 as - author un verileriyle kopyaladık
 select * from author 
 
 
 -- mockaroo ile random sql datası üretebiliyorsun. 
-
--- yaptığımız update işlemin
 update author 
 set last_name="X"
 where first_name="Y"
 RETURNING *;  -- güncellenen verinin gelmesini istiyorsak 
 
 
-
-
-
 -- foreign key tanımlamasında : 
   author_id INT REFERENCES author (id) --author tablosundaki id ye referans veriyorum. 
+
+  
 --diğer tablodaki foreign key değerleri birden fazla olabilir. 
+--Benzersiz (Unique) olmalıdır.
+--NULL değerine sahip olamaz.
+--Bir tabloda en fazla 1 tane bulunur.
+--Bir tabloda birden fazla sütun FK olarak tanımlanabilir.
+--Aynı sütunun içerisinde aynı değerler bulunabilir. 
 
-Benzersiz (Unique) olmalıdır.
-NULL değerine sahip olamaz.
-Bir tabloda en fazla 1 tane bulunur.
-
-
-Bir tabloda birden fazla sütun FK olarak tanımlanabilir.
-Aynı sütunun içerisinde aynı değerler bulunabilir. 
-
-
--- DBMS  
---VERİ TİPLERİ  ( dökümantasyona bak ) VARCHAR,CHAR,TEXT 
 
 select(10+12); -- kendisi otomatik data type atıyor
 select(10.0::INT) --type integera dönüyor
@@ -58,9 +56,6 @@ SELECT (1::boolean) --true döner
 SELECT (null::boolean) --true döner 
 
 
-
-
-
 SELECT '1980-12-03'::DATE;
 SELECT 'DEC-03-1980'::DATE;
 SELECT 'DEC 03 1980'::DATE;
@@ -75,22 +70,17 @@ SELECT '02:16'::TIME WITH TIME ZONE;
 SELECT '1980 December 03 02:16:07'::TIMESTAMP;
 
 
-Sınırlı sayıda karekter kullanımı için VARCHAR veya CHAR veri tipleri kullanılır. VARCHAR veri tipi doldurulmayan karakterleri yok sayar, CHAR veri tipi ise doldurulmayan karakterler için boşluk bırakır. Sınırsız karekter kullanımı için ise TEXT veri tipi kullanılır.
+--Sınırlı sayıda karekter kullanımı için VARCHAR veya CHAR veri tipleri kullanılır. VARCHAR veri tipi doldurulmayan karakterleri yok sayar, CHAR veri tipi ise doldurulmayan karakterler için boşluk bırakır. Sınırsız karekter kullanımı için ise TEXT veri tipi kullanılır.
 
-Boolean Veri Tipleri
-TRUE, FALSE veya NULL (Bilinmeyen) değerlerini alabilirler.
-
-TRUE: true, yes, on, 1
-FALSE: false, no, off, 0
+--Boolean Veri Tipleri
+--TRUE, FALSE veya NULL (Bilinmeyen) değerlerini alabilirler.
+--TRUE: true, yes, on, 1
+--FALSE: false, no, off, 0
  
-ALTER ve NOT NULL
-NOT NULL
-Birçok durumda bizler herhangi bir sütuna yazılacak olan verilere belirli kısıtlamalar getirmek isteriz. Örneğin yaş sütünunda sadece sayısal verilerin olmasını isteriz ya da kullanıcı adı sütununda bilinmeyen (NULL) değerlerin olasını istemeyiz. Bu gibi durumlarda ilgili sütunda CONSTRAINT kısıtlama yapıları kullanılır.
-NULL bilinmeyen veri anlamındadır. Boş string veya 0 verilerinden farklıdır. Şu şekilde bir senaryo düşünelim bir kullanıcının email hesabı yoksa buradaki veriyi boş string şeklinde düşünebiliriz. Acak eğer kullanıcının maili var ancak ne olduğunu bilmiyorsak bu durumda o veri NULL (bilinmeyen) olarak tanımlanabilir.
-NOT NULL Kullanımı
-Employees şeklinde bir tablomuzu oluşturalım. Tablodaki first_name ve last_name sütunlarında bilinmeyen veri istemiyoruz, bu sütunlarda NOT NULL kısıtlama yapısı kullanabiliriz.
-
-
+--ALTER ve NOT NULL
+--Birçok durumda bizler herhangi bir sütuna yazılacak olan verilere belirli kısıtlamalar getirmek isteriz. Örneğin yaş sütünunda sadece sayısal verilerin olmasını isteriz ya da kullanıcı adı sütununda bilinmeyen (NULL) değerlerin olasını istemeyiz. Bu gibi durumlarda ilgili sütunda CONSTRAINT kısıtlama yapıları kullanılır.
+--NULL bilinmeyen veri anlamındadır. Boş string veya 0 verilerinden farklıdır. Şu şekilde bir senaryo düşünelim bir kullanıcının email hesabı yoksa buradaki veriyi boş string şeklinde düşünebiliriz. Acak eğer kullanıcının maili var ancak ne olduğunu bilmiyorsak bu durumda o veri NULL (bilinmeyen) olarak tanımlanabilir.
+--Employees şeklinde bir tablomuzu oluşturalım. Tablodaki first_name ve last_name sütunlarında bilinmeyen veri istemiyoruz, bu sütunlarda NOT NULL kısıtlama yapısı kullanabiliriz.
 
 
 ALTER TABLE users ALTER COLUMN username SET NOT NULL ; -- BAŞTAN CREATE LEMEKTENSE 
@@ -101,11 +91,8 @@ ALTER TABLE x ADD UNIQUE(y) -- eğer unique olmaan y ler varsa hata alıırsın.
 --UNIQUE kısıtlaması ile uyguladığımız sütundaki verilerin birbirlerinden farklı benzersiz olmalarını isteriz. PRIMARY KEY kısıtlaması kendiliğinden UNIQUE kısıtlamasına sahiptir.
 --NOT NULL kısıtlamasında olduğu gibi tablo oluştururken veya ALTER komutu ile beraber tablo oluştuktan sonra da kullanabiliriz.
 
---CHECK
-
-CHECK kısıtlaması ile uyguladığımız sütundaki verilere belirli koşullar verebiliriz. Örneğin age (yaş) olarak belirlediğimiz bir sütuna negatif değerler verebiliriz veya web portaline üye olan kullanıcıların yaşlarının 18 yaşından büyük olması gibi kendi senaryolarımıza uygun başka kıstlamalar da vermek isteyebiliriz.
-
-CHECK kısıtlamasını da tablo oluştururken veya ALTER komutu ile beraber tablo oluştuktan sonra kullanabiliriz.
+--CHECK kısıtlaması ile uyguladığımız sütundaki verilere belirli koşullar verebiliriz. Örneğin age (yaş) olarak belirlediğimiz bir sütuna negatif değerler verebiliriz veya web portaline üye olan kullanıcıların yaşlarının 18 yaşından büyük olması gibi kendi senaryolarımıza uygun başka kıstlamalar da vermek isteyebiliriz.
+--CHECK kısıtlamasını da tablo oluştururken veya ALTER komutu ile beraber tablo oluştuktan sonra kullanabiliriz.
   
 --ALTER TABLE <tablo_adı> ADD CHECK (age>=18) 
 
@@ -113,40 +100,43 @@ CHECK kısıtlamasını da tablo oluştururken veya ALTER komutu ile beraber tab
 
 
 
--PSQL
+
+--PSQL, PostgreSQL ile birlikte gelen terminal tabanlı bir kullanıcı arayüzüdür. PSQL sayesinde komut satırında sorgular yazıp, sonuçlarını görebiliriz. Aşağıda temel PSQL komutlarının ilk bölümünü bulabilirsiniz.
+--1.PSQL ile PostgreSQL'e host, port, kullanıcı adı ve veritabanı ismi ile bağlanmak için:
+--psql -h <host_name> -p <port_name> -U <kullanıcı_adı> <veritabanı_adı>
+
+--PostgreSQL’e bağlanma
+--psql -h <host_name> -p <port_name> -U <kullanıcı_adı> <veritabanı_adı>
+--psql -h localhost -p 5432 -U postgres dvdrental
 
 
-PSQL, PostgreSQL ile birlikte gelen terminal tabanlı bir kullanıcı arayüzüdür. PSQL sayesinde komut satırında sorgular yazıp, sonuçlarını görebiliriz. Aşağıda temel PSQL komutlarının ilk bölümünü bulabilirsiniz.
+--Veritabanı oluşturma
+CREATE DATABASE dvdrental;
+
+--Tablo oluşturma
+CREATE TABLE employees (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  age INT
+);
+
+--Tablo detaylarını görme
+--\d+ employees
 
 
+--Sütun adını değiştirme
+ALTER TABLE employees RENAME COLUMN name TO full_name;
 
-1.PSQL ile PostgreSQL'e host, port, kullanıcı adı ve veritabanı ismi ile bağlanmak için:
-psql -h <host_name> -p <port_name> -U <kullanıcı_adı> <veritabanı_adı>
+--UNIQUE constraint ekleme
+ALTER TABLE employees ADD CONSTRAINT unique_fullname UNIQUE (full_name);
 
-TERS SLACH L İLE DB LERİ GÖREBİLİRSİN. 
-2.Yeni veritabanı oluşturmak için
-CREATE DATABASE <veritabanı_adı>
+--PSQL içinde sık kullanılan ters slash komutları
+-- \l               -- Tüm veritabanlarını listele
+-- \c dvdrental     -- "dvdrental" veritabanına bağlan
+-- \dt              -- Veritabanındaki tüm tabloları listele
+-- \d+ users        -- "users" tablosunun detaylarını göster
+-- \conninfo        -- Şu anda hangi veritabanına bağlısın gösterir
 
-3.Yeni tablo oluşturmak için
-CREATE TABLE <tablo_adı> (   <sütun_adı> VERİ TİPİ (KISITLAMA)
- 
-4.Tablo detaylarını görmek için
-\d+ <tablo_adı>
-
-5.Bir tablodaki sütun ismini değiştirmek için
-ALTER TABLE <tablo_adı> RENAME COLUMN <sütun_adı> TO <yeni_sütun_adı>
-
-
-6.Bir sütuna UNIQUE kısıtlaması eklemek için
-ALTER TABLE <tablo_adı> ADD CONSTRAINT <kısıtlama_adı> UNIQUE <sütun_adı>
-
-TERS SLACH C  dvdrental  :  database e bağlanırın. 
-TERS CHALS dt ile list of relations 
-
-
-ters slash d+ ile tüm tablo detayları 
-
-ters slash d+ user 
 
 
 
