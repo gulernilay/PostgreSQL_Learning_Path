@@ -1,6 +1,4 @@
 # PostgreSQL_Learning_Path
-# 🧠 SQL Practice Files
-
 This repository contains a comprehensive collection of `.sql` files aimed at helping learners and professionals practice and master SQL concepts ranging from beginner to advanced levels.
 
 ## 📁 Directory Overview
@@ -52,13 +50,14 @@ psql -U postgres -d your_database -f JOINS.sql
 
 3.Or copy-paste queries interactively in your SQL environment.
 
-🎓 Ideal For
+---
+##🎓 Ideal For
 Computer science students
 Data analysts and backend developers
 SQL interview preparation
 Daily practice & revision
-
-📌 Notes
+---
+##📌 Notes
 All files are written in plain SQL with inline comments where needed.
 Exercises are designed to be self-contained.
 Some files include real-world inspired data manipulation and schema design tasks.
